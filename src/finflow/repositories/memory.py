@@ -42,3 +42,17 @@ class InMemoryTransactionRepository(TransactionRepository):
 
     def count(self) -> int:
         return len(self._transactions)
+
+
+class InMemoryUserRepository(UserRepository):
+    def __init__(self, users: Iterable[User]) -> None:
+        self._users = {
+            user.username: user
+            for user in users
+        }
+
+    def get_by_username(
+        self,
+        username: str,
+    ) -> User | None:
+        return self._users.get(username)

@@ -37,3 +37,12 @@ class TransactionRepository(ABC):
     def count(self) -> int:
         """返回交易总数。"""
         ...
+
+
+class UserRepository(ABC):
+    @abstractmethod
+    def get_by_username(
+        self,
+        username: str,
+    ) -> User | None:
+        ...

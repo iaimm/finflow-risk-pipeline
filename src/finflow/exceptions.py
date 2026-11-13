@@ -12,3 +12,11 @@ class NotFoundError(FinFlowError):
 
 class ConflictError(FinFlowError):
     """当前操作与已有数据冲突。"""
+
+
+class AuthenticationError(FinFlowError):
+    """身份认证失败。"""
+
+
+class AuthorizationError(FinFlowError):
+    """身份有效，但没有执行操作的权限。"""

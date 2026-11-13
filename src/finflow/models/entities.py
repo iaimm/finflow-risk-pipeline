@@ -25,3 +25,12 @@ class Transaction:
     currency: str
     transaction_type: str
     occurred_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class User:
+    user_id: str
+    username: str
+    password_hash: str
+    roles: tuple[str, ...]
+    disabled: bool = False
