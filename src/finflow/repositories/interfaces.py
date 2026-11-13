@@ -23,3 +23,17 @@ class TransactionRepository(ABC):
     ) -> Transaction | None:
         """根据交易 ID 查询交易；不存在时返回 None。"""
         ...
+
+    @abstractmethod
+    def list(
+        self,
+        limit: int,
+        offset: int,
+    ) -> list[Transaction]:
+        """按创建顺序分页查询交易。"""
+        ...
+
+    @abstractmethod
+    def count(self) -> int:
+        """返回交易总数。"""
+        ...

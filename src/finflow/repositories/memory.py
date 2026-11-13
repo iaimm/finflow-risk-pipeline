@@ -30,3 +30,15 @@ class InMemoryTransactionRepository(TransactionRepository):
         transaction_id: str,
     ) -> Transaction | None:
         return self._transactions.get(transaction_id)
+
+
+    def list(
+        self,
+        limit: int,
+        offset: int,
+    ) -> list[Transaction]:
+        transactions = list(self._transactions.values())
+        return transactions[offset:offset + limit]
+
+    def count(self) -> int:
+        return len(self._transactions)

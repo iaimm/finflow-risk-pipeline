@@ -75,3 +75,32 @@ class TransactionService:
             transaction.account_id,
         )
         return transaction
+
+    def get_transaction(
+        self,
+        transaction_id: str,
+    ) -> Transaction:
+        transaction = self._transaction_repository.get_by_id(
+            transaction_id
+        )
+
+        if transaction is None:
+            raise NotFoundError(
+                f"Transaction not found: {transaction_id}"
+            )
+
+        return transaction
+
+
+    def list_transactions(
+        self,
+        limit: int,
+        offset: int,
+    ) -> tuple[list[Transaction], int]:
+        transactions = self._transaction_repository.list(
+            limit=limit,
+            offset=offset,
+        )
+        total = self._transaction_repository.count()
+
+        return transactions, total
