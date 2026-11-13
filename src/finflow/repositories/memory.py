@@ -1,11 +1,15 @@
 from collections.abc import Iterable
 
-from finflow.models.entities import Account, Transaction
+from finflow.models.entities import (
+    Account,
+    Transaction,
+    User,
+)
 from finflow.repositories.interfaces import (
     AccountRepository,
     TransactionRepository,
+    UserRepository,
 )
-
 
 class InMemoryAccountRepository(AccountRepository):
     def __init__(self, accounts: Iterable[Account] = ()) -> None:
