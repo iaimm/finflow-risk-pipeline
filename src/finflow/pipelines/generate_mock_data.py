@@ -7,6 +7,13 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Sequence
 
+import logging
+
+from finflow.config import Settings
+from finflow.logging_config import configure_logging
+
+logger = logging.getLogger(__name__)
+
 from finflow.models.entities import Account, Customer, Transaction
 
 
@@ -124,7 +131,7 @@ def main() -> None:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path("data/raw"),
+        default=settings.data_dir,
         help="CSV output directory.",
     )
     args = parser.parse_args()
@@ -135,13 +142,16 @@ def main() -> None:
     )
     write_dataset(dataset, args.output_dir)
 
-    print(
-        f"Generated {len(dataset.customers)} customers, "
-        f"{len(dataset.accounts)} accounts, and "
-        f"{len(dataset.transactions)} transactions "
-        f"in {args.output_dir}"
+    logger.info(
+        "Generated %d customers, %d accounts, and %d transactions in %s",
+        len(dataset.customers),
+        len(dataset.accounts),
+        len(dataset.transactions),
+        args.output_dir,
     )
 
 
 if __name__ == "__main__":
+    settings = Settings.from_env()
+    configure_logging(settings.log_level)
     main()
