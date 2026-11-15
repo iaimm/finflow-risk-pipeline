@@ -11,14 +11,14 @@ class Customer:
 
 
 @dataclass(frozen=True, slots=True)
-class Account:
+class AccountRecord:
     account_id: str
     customer_id: str
     currency: str
 
 
 @dataclass(frozen=True, slots=True)
-class Transaction:
+class TransactionRecord:
     transaction_id: str
     account_id: str
     amount: Decimal
@@ -28,7 +28,7 @@ class Transaction:
 
 
 @dataclass(frozen=True, slots=True)
-class User:
+class UserRecord:
     user_id: str
     username: str
     password_hash: str

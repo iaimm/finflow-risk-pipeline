@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: finflow-postgres
+    environment:
+      POSTGRES_USER: finflow
+      POSTGRES_PASSWORD: finflow_local_password
+      POSTGRES_DB: finflow
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - /home/wanfch/docker-volumes/finflow-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finflow -d finflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  finflow_postgres_data:

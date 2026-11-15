@@ -20,9 +20,19 @@ from finflow.repositories.memory import InMemoryUserRepository
 from finflow.security import hash_password
 from finflow.services.auth_service import AuthService
 
+import os
+from collections.abc import Iterator
+
+from finflow.db import build_session_factory
+from finflow.repositories.postgres import (
+    PostgresAccountRepository,
+    PostgresTransactionRepository,
+)
+
 
 def create_app(
     auth_settings: AuthSettings | None = None,
+    database_url: str | None = None,
 ) -> FastAPI:
     auth_settings = (
         auth_settings or AuthSettings.from_env()
@@ -33,18 +43,50 @@ def create_app(
         seed=42,
     )
 
-    account_repository = InMemoryAccountRepository(
-        dataset.accounts
-    )
-    transaction_repository = InMemoryTransactionRepository()
+    if database_url is None:
+        account_repository = InMemoryAccountRepository(
+            dataset.accounts
+        )
+        transaction_repository = InMemoryTransactionRepository()
 
-    for transaction in dataset.transactions:
-        transaction_repository.add(transaction)
+        for transaction in dataset.transactions:
+            transaction_repository.add(transaction)
 
-    transaction_service = TransactionService(
-        account_repository=account_repository,
-        transaction_repository=transaction_repository,
-    )
+        memory_transaction_service = TransactionService(
+            account_repository=account_repository,
+            transaction_repository=transaction_repository,
+        )
+
+        def transaction_service_provider(
+        ) -> Iterator[TransactionService]:
+            yield memory_transaction_service
+
+    else:
+        session_factory = build_session_factory(database_url)
+
+        def transaction_service_provider(
+        ) -> Iterator[TransactionService]:
+            with session_factory() as session:
+                try:
+                    account_repository = (
+                        PostgresAccountRepository(session)
+                    )
+                    transaction_repository = (
+                        PostgresTransactionRepository(session)
+                    )
+
+                    service = TransactionService(
+                        account_repository=account_repository,
+                        transaction_repository=transaction_repository,
+                    )
+
+                    yield service
+
+                    session.commit()
+
+                except Exception:
+                    session.rollback()
+                    raise
 
     users = (
         User(
@@ -73,7 +115,10 @@ def create_app(
         version="0.1.0",
     )
 
-    app.state.transaction_service = transaction_service
+    app.state.transaction_service_provider = (
+        transaction_service_provider
+    )
+
     app.state.auth_service = auth_service
     app.state.auth_settings = auth_settings
 
@@ -86,4 +131,6 @@ def create_app(
     return app
 
 
-app = create_app()
+app = create_app(
+    database_url=os.getenv("FINFLOW_DATABASE_URL")
+)

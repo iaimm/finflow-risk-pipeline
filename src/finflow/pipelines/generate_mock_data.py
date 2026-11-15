@@ -14,14 +14,14 @@ from finflow.logging_config import configure_logging
 
 logger = logging.getLogger(__name__)
 
-from finflow.models.entities import Account, Customer, Transaction
+from finflow.models.entities import AccountRecord, Customer, TransactionRecord
 
 
 @dataclass(frozen=True, slots=True)
 class MockDataset:
     customers: tuple[Customer, ...]
-    accounts: tuple[Account, ...]
-    transactions: tuple[Transaction, ...]
+    accounts: tuple[AccountRecord, ...]
+    transactions: tuple[TransactionRecord, ...]
 
 
 def generate_mock_data(
@@ -36,7 +36,7 @@ def generate_mock_data(
     base_time = datetime(2026, 1, 1, tzinfo=timezone.utc)
 
     customers: list[Customer] = []
-    accounts: list[Account] = []
+    accounts: list[AccountRecord] = []
 
     account_number = 1
 
@@ -51,7 +51,7 @@ def generate_mock_data(
         # 每个客户拥有两个账户。
         for _ in range(2):
             accounts.append(
-                Account(
+                AccountRecord(
                     account_id=f"A{account_number:06d}",
                     customer_id=customer.customer_id,
                     currency="CNY",
@@ -59,7 +59,7 @@ def generate_mock_data(
             )
             account_number += 1
 
-    transactions: list[Transaction] = []
+    transactions: list[TransactionRecord] = []
 
     for transaction_number in range(1, transaction_count + 1):
         account = rng.choice(accounts)
@@ -71,7 +71,7 @@ def generate_mock_data(
         )
 
         transactions.append(
-            Transaction(
+            TransactionRecord(
                 transaction_id=f"T{transaction_number:08d}",
                 account_id=account.account_id,
                 amount=amount,

@@ -3,7 +3,7 @@ from typing import Annotated
 import jwt
 from fastapi import Depends, Request
 from fastapi.security import (
-    HTTPAuthorizationCredentials,
+    HTTPAuthorizationCredentials, 
     HTTPBearer,
 )
 

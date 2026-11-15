@@ -1,18 +1,18 @@
 from abc import ABC, abstractmethod
 
-from finflow.models.entities import Account, Transaction
+from finflow.models.entities import AccountRecord, TransactionRecord
 
 
 class AccountRepository(ABC):
     @abstractmethod
-    def get_by_id(self, account_id: str) -> Account | None:
+    def get_by_id(self, account_id: str) -> AccountRecord | None:
         """根据账户 ID 查询账户；不存在时返回 None。"""
         ...
 
 
 class TransactionRepository(ABC):
     @abstractmethod
-    def add(self, transaction: Transaction) -> None:
+    def add(self, transaction: TransactionRecord) -> None:
         """保存一笔交易。"""
         ...
 
@@ -20,7 +20,7 @@ class TransactionRepository(ABC):
     def get_by_id(
         self,
         transaction_id: str,
-    ) -> Transaction | None:
+    ) -> TransactionRecord | None:
         """根据交易 ID 查询交易；不存在时返回 None。"""
         ...
 
@@ -29,7 +29,7 @@ class TransactionRepository(ABC):
         self,
         limit: int,
         offset: int,
-    ) -> list[Transaction]:
+    ) -> list[TransactionRecord]:
         """按创建顺序分页查询交易。"""
         ...
 

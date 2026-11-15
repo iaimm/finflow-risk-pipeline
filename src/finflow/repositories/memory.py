@@ -1,9 +1,9 @@
 from collections.abc import Iterable
 
 from finflow.models.entities import (
-    Account,
-    Transaction,
-    User,
+    AccountRecord,
+    TransactionRecord,
+    UserRecord,
 )
 from finflow.repositories.interfaces import (
     AccountRepository,
@@ -12,27 +12,27 @@ from finflow.repositories.interfaces import (
 )
 
 class InMemoryAccountRepository(AccountRepository):
-    def __init__(self, accounts: Iterable[Account] = ()) -> None:
+    def __init__(self, accounts: Iterable[AccountRecord] = ()) -> None:
         self._accounts = {
             account.account_id: account
             for account in accounts
         }
 
-    def get_by_id(self, account_id: str) -> Account | None:
+    def get_by_id(self, account_id: str) -> AccountRecord | None:
         return self._accounts.get(account_id)
 
 
 class InMemoryTransactionRepository(TransactionRepository):
     def __init__(self) -> None:
-        self._transactions: dict[str, Transaction] = {}
+        self._transactions: dict[str, TransactionRecord] = {}
 
-    def add(self, transaction: Transaction) -> None:
+    def add(self, transaction: TransactionRecord) -> None:
         self._transactions[transaction.transaction_id] = transaction
 
     def get_by_id(
         self,
         transaction_id: str,
-    ) -> Transaction | None:
+    ) -> TransactionRecord | None:
         return self._transactions.get(transaction_id)
 
 
@@ -40,7 +40,7 @@ class InMemoryTransactionRepository(TransactionRepository):
         self,
         limit: int,
         offset: int,
-    ) -> list[Transaction]:
+    ) -> list[TransactionRecord]:
         transactions = list(self._transactions.values())
         return transactions[offset:offset + limit]
 
@@ -49,7 +49,7 @@ class InMemoryTransactionRepository(TransactionRepository):
 
 
 class InMemoryUserRepository(UserRepository):
-    def __init__(self, users: Iterable[User]) -> None:
+    def __init__(self, users: Iterable[UserRecord]) -> None:
         self._users = {
             user.username: user
             for user in users
@@ -58,5 +58,5 @@ class InMemoryUserRepository(UserRepository):
     def get_by_username(
         self,
         username: str,
-    ) -> User | None:
+    ) -> UserRecord | None:
         return self._users.get(username)

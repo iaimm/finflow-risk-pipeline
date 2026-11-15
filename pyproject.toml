@@ -9,9 +9,12 @@ description = "A financial transaction data pipeline with risk reporting"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi",
-    "uvicorn[standard]", 
+    "uvicorn[standard]",
     "PyJWT",
-    "pwdlib[argon2]"
+    "pwdlib[argon2]",
+    "SQLAlchemy>=2",
+    "psycopg[binary]>=3",
+    "alembic",
 ]
 
 [project.optional-dependencies]

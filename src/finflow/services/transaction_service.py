@@ -11,7 +11,7 @@ from finflow.exceptions import (
 
 logger = logging.getLogger(__name__)
 
-from finflow.models.entities import Transaction
+from finflow.models.entities import TransactionRecord
 from finflow.repositories.interfaces import (
     AccountRepository,
     TransactionRepository,
@@ -35,7 +35,7 @@ class TransactionService:
         currency: str = "CNY",
         transaction_type: str = "DEBIT",
         occurred_at: datetime | None = None,
-    ) -> Transaction:
+    ) -> TransactionRecord:
         if amount <= 0:
             raise ValidationError("Transaction amount must be positive")
 
@@ -59,7 +59,7 @@ class TransactionService:
                 f"Transaction already exists: {transaction_id}"
             )
 
-        transaction = Transaction(
+        transaction = TransactionRecord(
             transaction_id=transaction_id,
             account_id=account_id,
             amount=amount,
@@ -79,7 +79,7 @@ class TransactionService:
     def get_transaction(
         self,
         transaction_id: str,
-    ) -> Transaction:
+    ) -> TransactionRecord:
         transaction = self._transaction_repository.get_by_id(
             transaction_id
         )
@@ -96,7 +96,7 @@ class TransactionService:
         self,
         limit: int,
         offset: int,
-    ) -> tuple[list[Transaction], int]:
+    ) -> tuple[list[TransactionRecord], int]:
         transactions = self._transaction_repository.list(
             limit=limit,
             offset=offset,
