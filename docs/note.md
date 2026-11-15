@@ -8,4 +8,6 @@ docker compose exec postgres psql -U finflow -d finflow -c "SELECT conname FROM 
 
 
 
+
+
  
